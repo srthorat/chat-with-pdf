@@ -24,9 +24,9 @@ class ChatRequest(BaseModel):
 async def chat(request: ChatRequest):
     max_retries = 3
     retry_delay = 5
-    # Truncate inputs to reduce token usage
-    pdf_text = request.pdfText[:500]
-    user_input = request.userInput[:200]
+    # No truncation of inputs
+    pdf_text = request.pdfText
+    user_input = request.userInput
     # Get API key from environment
     api_key = os.getenv("HF_API_KEY")
     if not api_key:
@@ -46,13 +46,13 @@ async def chat(request: ChatRequest):
 
 Question: "{user_input}"
 
-Answer in 1-2 sentences based on the PDF. If unrelated, note it’s not based on the PDF."""
+Answer based on the PDF content. If unrelated, note it’s not based on the PDF."""
     payload = {
         "messages": [
             {"role": "system", "content": prompt},
             {"role": "user", "content": user_input}
         ],
-        "max_tokens": 50,
+        "max_tokens": 512,
         "model": "microsoft/Phi-3-mini-4k-instruct-fast",
         "stream": False
     }
@@ -71,7 +71,7 @@ Answer in 1-2 sentences based on the PDF. If unrelated, note it’s not based on
                 continue
             error_msg = str(e)
             if "rate limit" in error_msg.lower():
-                error_msg = "Hugging Face API rate limit exceeded. Try again later."
+                error_msg = "Hugging Face API rate limit exceeded. Try again later or reduce input size."
             elif "model" in error_msg.lower():
                 error_msg = "Model unavailable or access restricted."
             raise HTTPException(status_code=500, detail=f"Error processing request: {error_msg}")
