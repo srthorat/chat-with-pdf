@@ -22,4 +22,4 @@ COPY main.py .
 EXPOSE 8000
 
 # Start Ollama server and FastAPI app
-CMD bash -c "ollama serve & sleep 5 && ollama pull phi3 && uvicorn main:app --host 0.0.0.0 --port 8000"
+CMD bash -c "ollama serve & sleep 5 && ollama pull tinyllama && uvicorn main:app --host 0.0.0.0 --port 8000"
