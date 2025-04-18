@@ -8,7 +8,7 @@ app = FastAPI()
 # Enable CORS to allow requests from GitHub Pages
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://<your-username>.github.io", "*"],  # Replace with your GitHub Pages URL
+    allow_origins=["https://sthorat.github.io", "*"],  # Replace with your GitHub Pages URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -24,9 +24,9 @@ async def chat(request: ChatRequest):
         client = Client(host="http://localhost:11434")
         prompt = f"""You are a helpful assistant. Below is the text extracted from a PDF:
 
-{pdfText}
+{request.pdfText}
 
-The user has asked: "{userInput}"
+The user has asked: "{request.userInput}"
 
 Provide a concise and accurate response based on the PDF content. If the question is unrelated to the PDF, answer generally but note that the response is not based on the PDF."""
         
@@ -34,7 +34,7 @@ Provide a concise and accurate response based on the PDF content. If the questio
             model="phi3",
             messages=[
                 {"role": "system", "content": prompt},
-                {"role": "user", "content": userInput}
+                {"role": "user", "content": request.userInput}
             ],
             options={"temperature": 0.7}
         )
