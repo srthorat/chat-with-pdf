@@ -11,7 +11,7 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 # Set working directory
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
+# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -21,5 +21,5 @@ COPY main.py .
 # Expose port
 EXPOSE 8000
 
-# Start Ollama server and FastAPI app
+# Start Ollama server, pull tinyllama, and start FastAPI
 CMD bash -c "ollama serve & sleep 5 && ollama pull tinyllama && uvicorn main:app --host 0.0.0.0 --port 8000"
