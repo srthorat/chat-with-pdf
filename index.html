@@ -38,6 +38,10 @@
           text += content.items.map(item => item.str).join(' ') + '\n';
         }
 
+        if (text.length > 500) {
+          alert('PDF text is too large. Only the first 500 characters will be used.');
+          text = text.slice(0, 500);
+        }
         setPdfText(text);
         setMessages([{ sender: 'system', text: 'PDF uploaded successfully. You can now ask questions about the content.' }]);
       };
