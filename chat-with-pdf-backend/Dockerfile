@@ -1,13 +1,5 @@
 FROM python:3.10-slim
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Ollama
-RUN curl -fsSL https://ollama.com/install.sh | sh
-
 # Set working directory
 WORKDIR /app
 
@@ -21,5 +13,5 @@ COPY main.py .
 # Expose port
 EXPOSE 8000
 
-# Start Ollama server, pull tinyllama, and start FastAPI
-CMD bash -c "ollama serve & sleep 5 && ollama pull tinyllama && uvicorn main:app --host 0.0.0.0 --port 8000"
+# Start FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
