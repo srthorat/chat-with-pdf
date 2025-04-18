@@ -39,14 +39,19 @@ async def chat(request: ChatRequest):
         "Content-Type": "application/json"
     }
 
-    # Prompt and payload
-    prompt = f"""You are a concise assistant. Below is text from a PDF:
+    # Prompt to enforce PDF-based answers
+    prompt = f"""You are an expert assistant specializing in analyzing PDF content. Your task is to provide precise and detailed answers based exclusively on the following PDF text:
 
 {pdf_text}
 
-Question: "{user_input}"
+User question: "{user_input}"
 
-Answer based on the PDF content. If unrelated, note it’s not based on the PDF."""
+Instructions:
+1. If the question can be answered using the PDF text, provide a detailed and accurate response, including specific details, quotes, or references from the PDF to support your answer.
+2. If the question is unrelated to the PDF content or cannot be answered based on the provided text, respond exactly with: "This question is outside the PDF content."
+3. Do not use external knowledge or assumptions; rely only on the PDF text.
+4. Ensure your response is clear, concise, and directly addresses the question."""
+    
     payload = {
         "messages": [
             {"role": "system", "content": prompt},
